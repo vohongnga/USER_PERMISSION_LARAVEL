@@ -1,0 +1,42 @@
+version: '3'
+services:
+  web:
+    build:
+      context: .
+      dockerfile: ./web.docker
+    container_name: laravel_web
+    image: laravel_web
+    volumes:
+      - ../:/var/www
+    ports:
+      - 8085:80
+    networks:
+      - app-network
+  app:
+    build:
+      context: .
+      dockerfile: ./app.docker
+    container_name: laravel_app
+    image: laravel_app
+    volumes:
+      - ../:/var/www
+      - ./custom.ini:/usr/local/etc/php/conf.d/custom.ini
+    networks:
+      - app-network
+  db:
+    image: mysql:8.0
+    container_name: laravel_db
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      - "MYSQL_ROOT_PASSWORD=password"
+    ports:
+      - "33066:3306"
+    volumes:
+      - ./data/mysql_data:/var/lib/mysql
+      - ./my.cnf:/etc/mysql/conf.d/my.cnf
+    networks:
+      - app-network
+#Docker Networks
+networks:
+  app-network:
+    driver: bridge
