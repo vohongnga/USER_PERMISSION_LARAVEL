@@ -1,0 +1,48 @@
+body{
+    margin: 0;
+    padding:5px
+}
+.header{
+    /* height:80px; */
+    display: flex;
+    background-color: #b6dde8;
+    margin-bottom: 10px;
+}
+.row ul {
+    padding-left: 2px;
+}
+.row ul li{
+    padding: auto;
+    height: 50px;
+    /* border-bottom: 0.2px solid #dee2e6; */
+    text-align: center;
+}
+.row ul li a{
+    color:rgb(116, 108, 108)
+}
+.row ul li a :hover{
+    background-color: #555;
+    color: white;
+}
+.paginate span{
+    margin-bottom: 20px !important
+}
+svg.w-5.h-5{
+    width:20px !important
+}
+.paginate p{
+    color: white !important;
+}
+.txtred{
+    color: red;
+}
+a.disabled {
+    pointer-events: none;
+    color: #ccc;
+}
+.permission
+{
+    width: fit-content;
+    background-color: aqua;
+    padding: 5px;
+}
