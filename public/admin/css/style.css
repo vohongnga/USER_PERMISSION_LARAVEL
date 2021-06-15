@@ -1,27 +1,64 @@
-body{
+:root{
+    --text-color: rgb(105, 174, 230);
+    --background-color: rgb(245, 246, 248);
+    --back-color-hover: rgb(131, 192, 221);
+    --text-color-active: red;
+}
+html, body{
     margin: 0;
-    padding:5px
+    height: 100%;
+}
+.content {
+    background-color: white;
+    height: 100%;
 }
 .header{
     /* height:80px; */
     display: flex;
-    background-color: #b6dde8;
+    justify-content:space-between;
+    background-color: var(--background-color);
     margin-bottom: 10px;
+    height: 80px;
+    align-items: center;
+}
+.header-search
+{
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+}
+.header h3 {
+    color: var(--text-color);
+}
+.search {
+    height: 50px;
+}
+.logout{
+    border: none;
+    color: var(--text-color);
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    background-color: var(--background-color);
 }
 .row ul {
     padding-left: 2px;
+    align-items: center;
 }
 .row ul li{
     padding: auto;
     height: 50px;
+    line-height: 50px;
     /* border-bottom: 0.2px solid #dee2e6; */
     text-align: center;
 }
 .row ul li a{
     color:rgb(116, 108, 108)
 }
-.row ul li a :hover{
-    background-color: #555;
+.menu ul li:hover{
+    background-color:var(--background-color);
     color: white;
 }
 .paginate span{
@@ -34,7 +71,7 @@ svg.w-5.h-5{
     color: white !important;
 }
 .txtred{
-    color: red;
+    color: var(--text-color-active);
 }
 a.disabled {
     pointer-events: none;
@@ -43,6 +80,16 @@ a.disabled {
 .permission
 {
     width: fit-content;
-    background-color: aqua;
+    background-color:#4ed0d0;
     padding: 5px;
+    margin-top: 8px;
+    margin-right: 5px;
+    display:inline-block;
+    border-radius: 15px;
+    color: white;
+}
+.paginate{
+    display: flex;
+    justify-content: flex-end;
+    padding: 40px;
 }

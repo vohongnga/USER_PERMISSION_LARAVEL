@@ -25,7 +25,7 @@ class PermissionRequest extends FormRequest
     {
         return [
             'name'     =>'required|min:8|max:45|unique:permissions,name,'.$this->permission,
-            'role_id'  =>'required',
+            // 'role_id'  =>'required',
             'slug'     =>'unique:permissions,slug'
         ];
     }

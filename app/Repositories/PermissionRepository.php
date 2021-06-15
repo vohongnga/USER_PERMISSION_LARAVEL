@@ -50,4 +50,30 @@ class PermissionRepository extends RepositoryAbstract
     {
         return $this->model->find($permission_id)->roles;
     }
+
+    /**
+     * Search permissions by name or slug
+     *
+     * @param string $name
+     * @return mixed
+     */
+    public function search($name)
+    {
+        return $this->model->where('name','LIKE',"%$name%")->orWhere('slug','LIKE',"%name%")->with('roles')->paginate(Paginate::PAGINATE);
+    }
+
+    /**
+     * Check slug permission is exists
+     *
+     * @param string $slug
+     *@return boolean
+     */
+    public function checkSlug($slug)
+    {
+        $result = $this->model->where('slug',$slug)->first();
+        if (!$result) {
+            return true;
+        }
+        return false;
+    }
 }

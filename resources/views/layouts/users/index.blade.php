@@ -1,13 +1,21 @@
 @include('layouts.header')
-            <div class="col-md-9 col-lg-9">
-                <a class = "btn btn-primary m-2 mb-3" href="{{route('users.create')}}">Add</a>
-                <form style="width:fit-content;display:inline-block" method="get" action="{{route('users.search')}}">
-                    @csrf
-                    <div class="form-group">
-                        <input type="search" name = "search" placeholder="&#xF002; Search" style="font-family: Arial, 'Font Awesome 5 Free'" />
-                    </div>
+@if (!isset($name))
+@php
+    $name = '';
+@endphp
 
-                </form>
+@endif
+            <div class="col-md-9 col-lg-9">
+                <div class = "header-search">
+                    <a class = "btn btn-primary m-2 mb-3" href="{{route('users.create')}}">Add</a>
+                    <form style="width:fit-content;display:inline-block" method="get" action={{route('users.search')}}>
+                        @csrf
+                        <div class="form-group">
+                            <input type="text" name="search" id="" class="form-control" placeholder="&#xF002; Search" style="font-family: Arial, 'Font Awesome 5 Free'"  aria-describedby="helpId" value="{{$name}}">
+                        </div>
+
+                    </form>
+                </div>
 
                 <table class="table">
                     <thead>
@@ -21,16 +29,20 @@
                     <tbody>
                         @php
                             $index = ($page-1)*10;
-                            $auth = Auth::user()->id
+                            $auth = Auth::user()->id;
+                            $arrUser = $members;
                         @endphp
-                        @foreach ($users as $user)
+                        @if ($role)
+                            @php
+                                $arrUser = $users;
+                            @endphp
+                        @endif
+                        @foreach ($arrUser as $user)
                             @php
                                 $index ++;
                                 $urlEdit = route('users.edit',['user'=>$user->id,'page'=>$page]);
                                 $urlDel = route('users.destroy',$user->id);
                                 $urlChangePass = route('users.changePass',$user->id);
-                                $disabled = "disabled";
-                                $disabledBtn = "disabled";
                             @endphp
 
                         <tr>
@@ -39,30 +51,28 @@
                             <td>{{$user->email}}</td>
                             <td>
                                 @if ($user->role->id != 1 || $auth == $user->id)
-                                @php
-
-
-                                    $disabled="";
-                                    $disabledBtn = "";
-                                @endphp
-                            @endif
-                                <a class="btn btn-primary mr-2 mb-1 {{$disabled}} " href="{{$urlEdit}}" disabled tabindex="-1">Edit</a>
-                                <a class="btn btn-primary mr-2 {{$disabled}}" href="{{$urlChangePass}}">Change password</a>
+                                <a class="btn btn-primary mr-2  " href="{{$urlEdit}}" disabled tabindex="-1">Edit</a>
+                                <a class="btn btn-primary mr-2 " href="{{$urlChangePass}}">Change password</a>
                                 <form method = "post" action = {{$urlDel}} style="display: inline">
                                     @method('DELETE')
                                     @csrf
-                                    <button class = "btn btn-danger" {{$disabledBtn}} onclick="alert('Are you sure to delete user!')">Delete</button>
+                                    <button class = "btn btn-danger" onclick="alert('Are you sure to delete user!')">Delete</button>
                                 </form>
+                            @endif
                             </td>
                         </tr>
                         @endforeach
                     </tbody>
                 </table>
                 <div class="paginate">
-                    {{$users->links()}}
+                    {{$arrUser->links("pagination::bootstrap-4")}}
                 </div>
             </div>
         </div>
     </div>
+    <script>
+        $('.flex justify-between flex-1 sm:hidden').empty();
+
+    </script>
 </body>
 </html>

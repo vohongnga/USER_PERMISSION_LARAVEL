@@ -10,7 +10,6 @@
                             <th>ID</th>
                             <th>Name</th>
                             <th>Slug</th>
-                            <th>Roles</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -30,11 +29,6 @@
                             <td>{{$permission->name}}</td>
                             <td>{{$permission->slug}}</td>
                             <td>
-                                @foreach($permission->roles as $role)
-                                <span class="permission">{{$role->name}}</span>
-                                @endforeach
-                            </td>
-                            <td>
                                 <a class="btn btn-primary mr-2 mb-1" href="{{$urlEdit}}" >Edit</a>
                                 <form method = "post" action = {{$urlDel}} style="display: inline">
                                     @method('DELETE')
@@ -47,7 +41,7 @@
                     </tbody>
                 </table>
                 <div class="paginate">
-                    {{$permissions->links()}}
+                    {{$permissions->links("pagination::bootstrap-4")}}
                 </div>
             </div>
         </div>

@@ -15,7 +15,7 @@
                     <p class="txtred">{{ $message }}</p>
                     @enderror
                 </div>
-                <div class="form-group">
+                {{-- <div class="form-group">
                     <label>Role</label>
                     <select name = "role_id[]" class="selectpicker" multiple data-live-search="true">
                         @foreach ($roles as $role)
@@ -26,15 +26,11 @@
                     @error('role_id')
                     <p class="txtred">{{ $message }}</p>
                     @enderror
-                  </div>
+                  </div> --}}
                   <div class="form-group">
                     <button type = "submit" class="btn btn-primary">Submit</button>
                     <button type="reset" class="btn btn-warning" value="Reset">Reset</button>
                   </div>
-                  {{-- <select class="selectpicker" multiple data-live-search="true">
-                    <option>Mustard</option>
-                    <option>Ketchup</option>
-                    <option>Relish</option> --}}
                   </select>
                 </form>
             </div>

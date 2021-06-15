@@ -41,9 +41,11 @@ class UserController extends Controller
         if (!$this->checkPermission('show-user')) {
             return redirect()->route('home.index')->with(['msgF'=>'You do not have permission for show-user']);
         }
+        $role = $this->user->isAdmin();
         $page = $request->get('page', 1);
         $users = $this->user->getAll();
-        return view('layouts.users.index',compact('users','page'));
+        $members = $this->user->getMembers(Auth::user()->role_id);
+        return view('layouts.users.index',compact('users','page','role','members'));
     }
 
     /**
@@ -102,15 +104,15 @@ class UserController extends Controller
         if (!$this->checkPermission(Permission::EDITUSER)) {
             return redirect()->route('home.index')->with(['msgF'=>'You do not have permission for edit user']);
         }
-        $page = $request->get('page');
+        $page = $request->get('page',1);
         $user = $this->user->findById($id);
-        if(!$user)
+        if(!$user || $user->role->id == RoleUser::ADMIN)
         {
-            return redirect()->route('users.index')->with(['msgF'=>'User not found']);
+            return redirect()->route('users.index')->with(['msgF'=>'User not found or You can not edit this user']);
         }
-        if ($user->role->id == RoleUser::ADMIN) {
-            return redirect()->route('users.index')->with(['msgF'=>'You can not edit this user']);
-        }
+        // if ($user->role->id == RoleUser::ADMIN) {
+        //     return redirect()->route('users.index')->with(['msgF'=>'You can not edit this user']);
+        // }
         $roles = $this->role->all();
         return view('layouts.users.edit',compact('user','roles','page'));
     }
@@ -147,21 +149,17 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        if (!$this->checkPermission(Permission::DELETEUSER)) {
+        if (!$this->checkPermission(Permission::DELETEUSER) || !$this->user->isAdmin()) {
             return redirect()->route('home.index')->with(['msgF'=>'You do not have permission for delete user']);
         }
-        if (Auth::user()->id == $id) {
-            return redirect()->route('users.index')->with(['msgF'=>'you can not delete this user']);
-        }
-        if (!$this->user->isAdmin()) {
-            return redirect()->route('users.index')->with(['msgF'=>'You do not have permission for delete user!']);
-        }
+
         $userDelete = $this->user->findById($id);
+        if (Auth::user()->id == $id || $userDelete->role->id == RoleUser::ADMIN) {
+            return redirect()->route('users.index')->with(['msgF'=>'You can not delete this user']);
+        }
+
         if (!$userDelete) {
             return redirect()->route('users.index')->with(['msgF'=>'User not found']);
-        }
-        if ($userDelete->role->id == RoleUser::ADMIN) {
-            return redirect()->route('users.index')->with(['msgF'=>'you can not delete this user']);
         }
         $result = $this->user->delete($id);
         return redirect()->route('users.index')->with(['msgS'=>'Delete user successfully!']);
@@ -215,8 +213,10 @@ class UserController extends Controller
     {
         $name = $request->search;
         $users = $this->user->search($name);
+        $members = $this->user->searchMember($name,Auth::user()->role_id);
+        $role = $this->user->isAdmin();
         $page = $request->get('page', 1);
-        return view('layouts.users.index',compact('users','page'));
+        return view('layouts.users.index',compact('users','page','members','role','name'));
     }
 
 

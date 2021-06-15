@@ -77,7 +77,7 @@ class PermissionController extends Controller
         if (!$this->checkPermission(Permission::CREATEPER)) {
             return redirect()->route('home.index')->with(['msgF'=>'You do not have permission for create permission']);
         }
-        DB::beginTransaction();
+        // DB::beginTransaction();
         $permisisonData = [
             'name'=>$request->name,
             'slug'=>Str::slug($request->name),
@@ -87,36 +87,19 @@ class PermissionController extends Controller
         if (!$this->isFormatted($slug)) {
             return redirect()->route('permissions.index')->with(['msgF'=>'Name permission is unformatted']);
         }
+
+        if(!$this->permission->checkSlug($slug)) {
+            return redirect()->route('permissions.index')->with(['msgF'=>'Permission is exist']);
+        }
+
         $result = $this->permission->create($permisisonData);
 
-        $roleIdArr = $request->role_id;
-        foreach($roleIdArr as $role_id)
-        {
-            $rolePermissionData = [
-                'role_id' => $role_id,
-                'permission_id' => $result->id
-            ];
-            $resultRolePer = $this->rolePermission->create($rolePermissionData);
-        }
-
-
-        if (!$result || !$resultRolePer) {
-            DB::rollBack();
+        if (!$result) {
+            // DB::rollBack();
             return redirect()->route('permissions.index')->with(['msgF'=>'Add permission failed']);
         }
-        DB::commit();
+        // DB::commit();
         return redirect()->route('permissions.index')->with(['msgS'=>'Add permission successfully']);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
     }
 
     /**
@@ -135,11 +118,9 @@ class PermissionController extends Controller
         if (!$permission) {
             return redirect()->route('permissions.index')->with(['msgF'=>'Permission not found']);
         }
-        return redirect()->route('permissions.index')->with(['msgF'=>'You do not have permission for edit rolex']);
 
-        $roles = $this->role->all();
         $rolesOfPermission = $this->permission->roles($id);
-        return view('layouts.permissions.edit',compact('permission','roles','rolesOfPermission'));
+        return view('layouts.permissions.edit',compact('permission','rolesOfPermission'));
     }
 
     /**
@@ -154,49 +135,26 @@ class PermissionController extends Controller
         if (!$this->checkPermission(Permission::EDITPER)) {
             return redirect()->route('home.index')->with(['msgF'=>'You do not have permission for edit permission']);
         }
-        DB::beginTransaction();
         $data = [
             'name'=>$request->name,
             'slug'=>Str::slug($request->name)
         ];
+
+        $slug = Str::slug($request->name);
+
+        if (!$this->isFormatted($slug)) {
+            return redirect()->route('permissions.index')->with(['msgF'=>'Name permission is unformatted']);
+        }
+
+        if(!$this->permission->checkSlug($slug)) {
+            return redirect()->route('permissions.index')->with(['msgF'=>'Permission is exist']);
+        }
+
         $result = $this->permission->update($data,$id);
 
-        //array role_id old with permission
-        $roleOldArr = $this->rolePermission->findByField('permission_id',$id);
-        //array new role_id
-        $roleIdArray = $request->role_id;
-        $resultRoleP = true;
-
-        foreach($roleOldArr as $roleOld)
-        {
-            $rolePermissionId = $this->rolePermission->findRolePermission($roleOld->role_id,$id)->id;
-            //old is delete
-            if (!in_array($roleOld->role_id, $roleIdArray)) {
-                $resultRoleP = $this->rolePermission->delete($rolePermissionId);
-            }
-        }
-
-        //check if role_id is exists in array old role_id
-        foreach($roleIdArray as $role_id)
-        {
-            $resultCheck = true;
-            foreach($roleOldArr as $item)
-            {
-                if ($role_id == $item->role_id) {
-                    $resultCheck = false;
-                    break;
-                }
-            }
-            //insert new role_id
-            if ($resultCheck) {
-                $resultRoleP = $this->rolePermission->create(['role_id'=>$role_id,'permission_id'=>$id]);
-            }
-        }
-        if (!$result || !$resultRoleP) {
-            DB::rollBack();
+        if (!$result) {
             return redirect()->route('permissions.index')->with(['msgF'=>'Update permission failed']);
         }
-        DB::commit();
         return redirect()->route('permissions.index')->with(['msgS'=>'Update permission successfully']);
     }
 
@@ -214,19 +172,16 @@ class PermissionController extends Controller
         if (!$this->permission->findById($id)) {
             return redirect()->route('permissions.index')->with(['mdgF'=>'Permission not found']);
         }
-        DB::beginTransaction();
+
         $permissionIdArray = $this->rolePermission->findByField('permission_id',$id);
 
-        foreach($permissionIdArray as $alo)
-        {
+        foreach($permissionIdArray as $alo) {
             $resultDeleteInRolePermission = $this->rolePermission->delete($alo->id);
         }
         $result = $this->permission->delete($id);
         if (!$resultDeleteInRolePermission || !$result) {
-            DB::rollBack();
             return redirect()->route('permissions.index')->with(['msgF'=>'Delete permission failed']);
         }
-        DB::commit();
         return redirect()->route('permissions.index')->with(['msgS'=>'Delete permission successfully']);
     }
 

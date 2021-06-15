@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Laravel</title>
     <link href="/resources/assets/style.css" rel="stylesheet">
-    <link href="{{ asset('admin/css/style.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('admin/css/style.css?v=5') }}" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/solid.css">
     <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
@@ -28,12 +28,13 @@ $('select').selectpicker();
 </script>
 </head>
 <body>
-    <div class ="header p-2" style="display:flex; justify-content:space-between;">
-        <h5>Laravel</h5>
-        <form method = "post" action = "{{route('logout')}}" style="display: inline">
-            @csrf
-            <button class = "btn btn-outline-primary" >LOGOUT</button>
-        </form>
+    <div class ="header p-2" >
+        <h3>Laravel</h3>
+            <form method = "post" action = "{{route('logout')}}" style="display: inline">
+                @csrf
+                <button class = "logout" >LOGOUT</button>
+            </form>
+
     </div>
     @if (session()->has('msgF'))
     <div class="alert alert-warning">
@@ -57,18 +58,18 @@ $('select').selectpicker();
 
 @endphp
     <div>
-        <div class="row">
-            <div class ="col-md-3 col-lg-3 p-3">
+        <div class="row content">
+            <div class ="col-md-3 col-lg-3 p-3 menu">
                 <ul style="list-style-type: none; margin: 0" class="p-2 mx-auto">
                     @foreach($sideBar as $route=>$text)
                     @php
                         $check = strpos($uri,$route);
                         if($check !=false)
-                        $active = 'style="color:red"';
+                        $active = 'style="color:#00d0ff"';
                         else
                         $active = "";
                     @endphp
-                    <li><a href="{{route($route.'.index')}}"><span {!!$active!!}>{{$text}}</span></a></li>
+                    <div><li><a href="{{route($route.'.index')}}"><span {!!$active!!}>{{$text}}</span></a></li></div>
                     @endforeach
                 </ul>
             </div>

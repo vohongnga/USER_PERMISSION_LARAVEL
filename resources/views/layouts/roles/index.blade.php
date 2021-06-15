@@ -1,9 +1,6 @@
 @include('layouts.header')
             <div class="col-md-9 col-lg-9">
                 <a class = "btn btn-primary m-2 mb-3" href="{{route('roles.create')}}">Add</a>
-                {{-- @if(Session::has('msg'))
- {{Session::get('msg')}}
- @endif --}}
                 <table class="table">
                     <thead>
                         <tr>
@@ -11,7 +8,7 @@
                             <th>Name</th>
                             <th>Slug</th>
                             <th>Permissions</th>
-                            <th>Action</th>
+                            <th style="width:180px">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -32,7 +29,7 @@
                             <td>{{$role->slug}}</td>
                             <td>
                                 @foreach($role->permissions as $permission)
-                                <span class="permission">{{$permission->name}}</span>
+                                <div class="permission">{{$permission->name}}</div>
                                 @endforeach
                             </td>
                             <td>
@@ -49,7 +46,7 @@
                     </tbody>
                 </table>
                 <div class="paginate">
-                    {{$roles->links()}}
+                    {{$roles->links("pagination::bootstrap-4")}}
                 </div>
             </div>
         </div>
